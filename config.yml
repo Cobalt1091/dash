@@ -1,0 +1,67 @@
+proxmox:
+  host: 192.168.1.233
+  user: root@pam
+  pass: 11092010
+  node: badger
+docker:
+  host: 192.168.1.231
+  user: davin
+custom:
+  testing:
+    host: 192.168.1.226
+    user: davin
+    password: 1109
+    command: mkdir -v /home/davin/testing
+
+
+title: Dashboard
+
+widgets:
+  monitor:
+    Jellyfin:      
+      service: proxmox
+      type: LXC
+      id: 102
+      url: http://192.168.1.230:8096
+    VaultWarden:
+      service: proxmox
+      type: lxc
+      id: 103
+      url: https://192.168.1.229:8000
+    Nginx Proxy Manager:
+      service: proxmox
+      type: lxc
+      id: 105
+      url: http://192.168.1.227:81
+    Open Media Vault:
+      service: proxmox
+      type: vm
+      id: 100
+      url: http://192.168.1.232:80
+    Docker:
+      service: proxmox
+      type: vm
+      id: 101
+      url: http://192.168.1.231:2283
+    Home Assistant:
+      service: proxmox
+      type: vm
+      id: 104
+      url: http://192.168.1.228:8123
+    Proxmox Testing:
+      service: proxmox
+      type: lxc
+      id: 106
+      url: http://192.168.1.226:80
+    Docker Testing:
+      service: docker
+      name: glance
+      url: http://192.168.1.231:8080
+    Custom Test:
+      service: custom
+      name: testing
+      url: http://192.168.1.226:8080
+    Immich:
+      service: docker
+      name: immich_server
+      url: http://192.168.1.231:2283
