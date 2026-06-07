@@ -1,17 +1,17 @@
 proxmox:
-  host: 192.168.1.233
-  user: root@pam
-  pass: 11092010
-  node: badger
+  host:
+  user:
+  pass:
+  node:
 docker:
-  host: 192.168.1.231
-  user: davin
+  host:
+  user:
 custom:
   testing:
-    host: 192.168.1.226
-    user: davin
-    password: 1109
-    command: mkdir -v /home/davin/testing
+    host:
+    user:
+    password:
+    command:
 
 
 title: Dashboard

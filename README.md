@@ -1,6 +1,7 @@
 # Configuration
-## Basic Structure
 The config file, config.yml, has all of the configuration settings for widgets, proxmox, docker, and more. This file goes over the structure of config.yml file. It is recommended to put your authentication information, like for proxmox and docker, at the top of the document, then widgets.
+## Basic Structure
+View a template V
 
 ## Authentication
 
