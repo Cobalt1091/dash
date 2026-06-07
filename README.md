@@ -1,7 +1,5 @@
 # Configuration
-The config file, config.yml, has all of the configuration settings for widgets, proxmox, docker, and more. This file goes over the structure of config.yml file. It is recommended to put your authentication information, like for proxmox and docker, at the top of the document, then widgets.
-## Basic Structure
-View a template V
+The config file, config.yml, has all of the configuration settings for widgets, proxmox, docker, and more. This file goes over the structure of config.yml file. It is recommended to put your authentication information, like for proxmox and docker, at the top of the document, then widgets. View a template in config.yml
 
 ## Authentication
 
@@ -68,6 +66,7 @@ This widget monitors a web ui and lets you restart a proxmox VM/LXC, docker cont
 widgets:
     monitor:
         myproxmoxservice:
+            service: proxmox
             type: lxc
             id: 102
             url: http://192.168.1.100:8080
