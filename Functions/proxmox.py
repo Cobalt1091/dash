@@ -13,6 +13,7 @@ header = f"{Fore.GREEN}[Proxmox]{Style.RESET_ALL} "
 
 with open('config.yml', 'r') as file:
     data = yaml.safe_load(file)
+
 proxmox = ProxmoxAPI(
     data['proxmox']['host'], #PVE HOST (IP)
     user=data['proxmox']['user'], # PVE Username
@@ -23,40 +24,58 @@ proxmox = ProxmoxAPI(
 
 node = data['proxmox']['node']
 
-def restart(resourceType, resourceId):
-
+def restart(name):
+    resourceType = data['widgets']['monitor'][name]['type']
+    resourceId = data['widgets']['monitor'][name]['id']
 
     if resourceType.lower() == "vm":
-        vm_status = proxmox.nodes(node).qemu(resourceId).status.current.get()
-        if vm_status.get('status') == 'running':
-            print(f'{header}Restarting VM {str(resourceId)}')
-            proxmox.nodes(node).qemu(resourceId).status.stop.post()
-            print(f'{header}Waiting for shutdown...')
-            time.sleep(10)
-            proxmox.nodes(node).qemu(resourceId).status.start.post()
-            print(f'{header}Done')
-        elif vm_status.get('status') == 'stopped':
-            print(f'{header}Starting vm {resourceId}...')
-            proxmox.nodes(node).qemu(resourceId).status.start.post()
-            print(f'{header}Done')
-
+        print(f'{header}Restarting VM {str(resourceId)}')
+        proxmox.nodes(node).qemu(resourceId).status.stop.post()
+        print(f'{header}Waiting for shutdown...')
+        time.sleep(10)
+        proxmox.nodes(node).qemu(resourceId).status.start.post()
+        print(f'{header}Done')
 
     if resourceType.lower() == "lxc":
-        lxcStatus = proxmox.nodes(node).lxc(resourceId).status.current.get()
-        if lxcStatus.get('status') == 'running':
-            print(f'{header}Restarting LXC {str(resourceId)}')
-            proxmox.nodes(node).lxc(resourceId).status.stop.post()
-            print(f'{header}Waiting for shutdown...')
-            time.sleep(10)
-            proxmox.nodes(node).lxc(resourceId).status.start.post()
-            print(f'{header}Done')
-        elif lxcStatus.get('status') == 'stopped':
-            print(f'{header}Starting LXC {str(resourceId)}...')
-            proxmox.nodes(node).lxc(resourceId).status.start.post()
-            print(f'{header}Done')
+        print(f'{header}Restarting LXC {str(resourceId)}')
+        proxmox.nodes(node).lxc(resourceId).status.stop.post()
+        print(f'{header}Waiting for shutdown...')
+        time.sleep(10)
+        proxmox.nodes(node).lxc(resourceId).status.start.post()
+        print(f'{header}Done')
 
-def overview():
-    window = Tk()
+
+def start(name):
+    resourceType = data['widgets']['monitor'][name]['type']
+    resourceId = data['widgets']['monitor'][name]['id']
+
+    if resourceType.lower() == "vm":
+        print(f'{header}Starting VM {str(resourceId)}')
+        proxmox.nodes(node).qemu(resourceId).status.start.post()
+        print(f'{header}Done')
+
+    if resourceType.lower() == "lxc":
+        print(f'{header}Starting LXC {str(resourceId)}')
+        proxmox.nodes(node).lxc(resourceId).status.start.post()
+        print(f'{header}Done')
+
+def stop(name):
+    resourceType = data['widgets']['monitor'][name]['type']
+    resourceId = data['widgets']['monitor'][name]['id']
+
+    if resourceType.lower() == "vm":
+        print(f'{header}Stopping VM {str(resourceId)}')
+        proxmox.nodes(node).qemu(resourceId).status.stop.post()
+        print(f'{header}Done')
+
+    if resourceType.lower() == "lxc":
+        print(f'{header}Stopping LXC {str(resourceId)}')
+        proxmox.nodes(node).lxc(resourceId).status.stop.post()
+        print(f'{header}Done')
+
+
+def overview(parent):
+    window = Toplevel(parent)
     window.mainloop
 
     closeButton = Button(window, text='X', command=window.destroy)
@@ -110,3 +129,63 @@ def overview():
 
     infoFrame.pack(fill=X)
 
+
+
+def info(parent, name):
+    monitorWin = Toplevel(parent)
+    title = Label(monitorWin, text=name, font=('Monospace', 20))
+    title.pack(padx=10, pady=5)
+
+    grid = Frame(monitorWin)
+    grid.columnconfigure(0, weight=1)
+    grid.columnconfigure(1, weight=1)
+
+    # Buttons
+    buttons = Frame(grid)
+
+    label = Label(buttons, text="Controls", font=('Monospace', 15))
+    label.pack(pady=5)
+
+    restartButton = Button(buttons, text="Restart", font=('Monospace', 12), command=lambda n = name: restart(n), width=15)
+    restartButton.pack(pady=5)
+
+    startButton = Button(buttons, text="Start", font=('Monospace', 12), command = lambda n = name: start(n), width=15)
+    startButton.pack(pady=5)
+
+    stopButton = Button(buttons, text="Stop", font=('Monospace', 12), command = lambda n = name: stop(n), width=15)
+    stopButton.pack(pady=5)
+
+    buttons.grid(column=0, row=0)
+
+
+    # Def needed info
+    resourceId = data['widgets']['monitor'][name]['id']
+    resourceType = data['widgets']['monitor'][name]['type']
+    
+    if resourceType == "lxc":
+        status = proxmox.nodes(node).lxc(resourceId).status.current.get()
+    elif resourceType == "vm":
+        status = proxmox.nodes(node).qemu(resourceId).status.current.get()
+
+
+    # Info
+    info = Frame(grid)
+    label = Label(info, text=f"Info\n({status.get('name')})", font=('Monospace', 15))
+    label.pack()
+
+    # Uptime
+    #print(f"{header}{round((status.get('uptime'))/360, 2)} Hrs")
+    Label(info, text=f"Uptime: {round((status.get('uptime'))/60, 2)} Min").pack()
+    # Memory
+    #print(f"{header}{(status.get('mem'))/1000000} MB")
+    Label(info, text=f"Memory: {round((status.get('mem'))/1000000, 2)} MB").pack()
+    # CPU
+    #print(f"{header}{status.get('cpu')}")
+    Label(info, text=f"CPU: {status.get('cpu'):.1%}").pack()
+    # Storage
+    #print(f"{header}{status.get('disk')}")
+    Label(info, text=f"Disk: {round((status.get('disk'))/1000000000, 2)} GB").pack()
+
+    info.grid(column=1, row=0)
+
+    grid.pack(fill=X)
