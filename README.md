@@ -85,3 +85,10 @@ widgets:
 `type`: The thing the service runs on (accepted: vm, lxc) (required only for proxmox)<br>
 `id`: The id for the lxc/vm (required only for proxmox)<br>
 `name`: Name of the docker container/custom service (required only for docker and custom)
+
+## Miscellaneous
+### Title
+```yaml
+title: My dashboard
+```
+This sets the title at the top of the main window
