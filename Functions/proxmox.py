@@ -4,6 +4,7 @@ import yaml
 import time
 from colorama import Fore, Style, init
 from PIL import Image, ImageTk
+import webbrowser
 init(autoreset=True)
 
 # https://pve.proxmox.com/pve-docs/api-viewer
@@ -154,6 +155,17 @@ def info(parent, name):
 
     stopButton = Button(buttons, text="Stop", font=('Monospace', 12), command = lambda n = name: stop(n), width=15)
     stopButton.pack(pady=5)
+    if data['widgets']['monitor'][name]['type'] == "lxc":
+        url = f"https://{data['proxmox']['host']}:8006/#v1:0:=lxc%2F{data['widgets']['monitor'][name]['id']}:4::::::=consolejs:"
+    elif data['widgets']['monitor'][name]['type'] == "vm":
+        url = f"https://{data['proxmox']['host']}:8006/#v1:0:=qemu%2F{data['widgets']['monitor'][name]['id']}:4::::::=consolejs:"
+    else:
+        print(f'{header} ERROR: Could not properly generate url for console')
+
+
+    print(f"{header}URL for console: {url}")
+    browserButton = Button(buttons, text="Open Console", font=('Monospace', 12), command = lambda: webbrowser.open(url), width=15)
+    browserButton.pack(pady=5)
 
     buttons.grid(column=0, row=0)
 
