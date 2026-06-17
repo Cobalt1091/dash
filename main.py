@@ -1,3 +1,5 @@
+#!/bin/usr/python
+
 from tkinter import *
 import yaml
 from PIL import Image, ImageTk
@@ -23,10 +25,6 @@ photoX = ImageTk.PhotoImage(resizedX)
 ogCheck = Image.open('Resources/Check.png')
 resizedCheck = ogCheck.resize((size, size))
 photoCheck = ImageTk.PhotoImage(resizedCheck)
-
-
-
-
 
 
 header = f"{Fore.BLUE}[Main]{Style.RESET_ALL} "
@@ -58,6 +56,9 @@ for index in data['widgets']['monitor']:
 
     if service == "proxmox":
         infobutton = Button(monitorFrame, text="i", font=('Monospace', 15), command = lambda p = mainWindow, i = index: proxmox.info(p, i))
+        infobutton.pack(side=LEFT)
+    elif service == "docker":
+        infobutton = Button(monitorFrame, text="i", font=('Monospace', 15), command=lambda i=index, p=mainWindow: docker1.info(p, i))
         infobutton.pack(side=LEFT)
 
     monitorFrame.pack()

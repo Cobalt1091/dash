@@ -26,6 +26,7 @@ In order to use docker, you must setup a ssh key.
 2. Hit enter on the prompts to use defaults and not add password.
 3. On the same machine, run `ssh-copy-id youruser@ipfordocker` Enter the password for the docker system when asked
 4. Test by running `ssh youruser@ipfordocker`. If it lets you login without your password, your good to go.
+5. It is recommended to setup docker root-less with your user. Refer to [docker's documentation](https://docs.docker.com/engine/install/linux-postinstall/#manage-docker-as-a-non-root-user) for instructions
 
 <b>Config</b><br>
 Connects to docker running on an external machine

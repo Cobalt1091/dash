@@ -1,35 +1,27 @@
-title: Default Dashboard
+title: My Dashboard
+
 proxmox:
-  host: 192.168.1.100
-  user: myuser
-  pass: mypass
-  node: mynode
+  host: 192.168.1.233
+  user: root@pam
+  pass: 11092010
+  node: badger
 docker:
-  host: 192.168.1.100
-  user: myuser
-custom:
-  custom1:
-    host: 192.168.1.100
-    user: myuser
-    pass: mypass
-    comand: mycommad
-  custom2:
-    host: 192.168.1.100
-    user: myuser
-    pass: mypass
-    comand: mycommand
+  host: 192.168.1.231
+  user: davin
 
 widgets:
   monitor:
-    myproxmoxservice:
+    Proxmox Debug:
       service: proxmox
       type: lxc
-      id: 100
-      url: http://192.168.1.100:8080
-    mydockerservice:
+      id: 106
+      url: http://192.168.1.226:80
+    Jellyfin:
+      service: proxmox
+      type: lxc
+      id: 102
+      url: http://192.168.1.230:8096
+    Glance:
       service: docker
-      name: mycontainer
-      url: http://192.168.1.100:8080
-    mycustomservice:
-      service: custom1
-      url: http://192.168.1.100:8080
+      name: glance
+      url: http://192.168.1.231:8080

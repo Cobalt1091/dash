@@ -84,6 +84,12 @@ def overview(parent):
     title = Label(window, text="Proxmox", font=('Monospace', 20))
     title.pack(padx=10, pady=10)
 
+    url = f"https://{data['proxmox']['host']}:8006/#v1:0:=node%2F{data['proxmox']['node']}:4:=jsconsole::::::"
+    print(f"{header} URL: {url}")
+
+    consoleButton = Button(window, text='Open Console', font=('Monospace', 15), command=lambda: webbrowser.open_new(url))
+    consoleButton.pack()
+
 
     infoFrame = Frame(window)
     infoFrame.columnconfigure(0, weight=1)
@@ -187,7 +193,7 @@ def info(parent, name):
 
     # Uptime
     #print(f"{header}{round((status.get('uptime'))/360, 2)} Hrs")
-    Label(info, text=f"Uptime: {round((status.get('uptime'))/60, 2)} Min").pack()
+    Label(info, text=f"Uptime: {round((status.get('uptime'))/3600, 2)} Hrs").pack()
     # Memory
     #print(f"{header}{(status.get('mem'))/1000000} MB")
     Label(info, text=f"Memory: {round((status.get('mem'))/1000000, 2)} MB").pack()

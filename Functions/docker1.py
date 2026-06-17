@@ -1,6 +1,7 @@
 import docker
 import yaml
 from colorama import Fore, Style, init
+from tkinter import *
 init(autoreset=True)
 
 with open('config.yml', 'r') as file:
@@ -12,11 +13,6 @@ def restart(name):
     username = data['docker']['user']
     host = data['docker']['host']
 
-    print(f"{header}{username}")
-    print(f"{header}{host}")
-    print(f"{header}{username}@{host}")
-
-
     # Set up docker connection
     client = docker.DockerClient(base_url=f"ssh://{username}@{host}")
     containers = client.containers.list(all=True)
@@ -25,3 +21,13 @@ def restart(name):
     print(f"{header}Restarting {name}...")
     container.restart()
     print(f"{header}Done")
+
+def info(parent, name):
+    contName = data['widgets']['monitor'][name]['name']
+    dockerWin = Toplevel(parent)
+
+    title = Label(dockerWin, text=contName, font=('Monospace', 15))
+    title.pack(padx=10, pady=5)
+
+    restartButton = Button(dockerWin, text="Restart", command = lambda n=contName: restart(n))
+    restartButton.pack(padx=10, pady=5)
